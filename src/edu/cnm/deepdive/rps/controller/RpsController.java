@@ -39,7 +39,7 @@ public class RpsController {
 
   private static final String GENERATION_FORMAT_KEY = "generation_format";
   private static final byte NUM_BREEDS = 5;
-  private static final int ARENA_SIZE = 50;
+  private static final int ARENA_SIZE = 200;
   private static final int ITERATIONS_PER_SLEEP = ARENA_SIZE * ARENA_SIZE / 50;
   private static final int SLEEP_INTERVAL = 1;
 
@@ -79,6 +79,7 @@ public class RpsController {
   @FXML
   private void reset(ActionEvent actionEvent) {
     arena.init();
+    terrainView.update();
     updateView();
   }
 
@@ -123,6 +124,7 @@ public class RpsController {
         for (int i = 0; i < ITERATIONS_PER_SLEEP; i++) {
           arena.advance();
         }
+        terrainView.update();
         running &= !arena.isAbsorbed();
         try {
           Thread.sleep(SLEEP_INTERVAL);
