@@ -79,6 +79,7 @@ public class RpsController {
   @FXML
   private void reset(ActionEvent actionEvent) {
     arena.init();
+    terrainView.update();
     updateView();
   }
 
@@ -123,6 +124,7 @@ public class RpsController {
         for (int i = 0; i < ITERATIONS_PER_SLEEP; i++) {
           arena.advance();
         }
+        terrainView.update();
         running &= !arena.isAbsorbed();
         try {
           Thread.sleep(SLEEP_INTERVAL);

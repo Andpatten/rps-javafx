@@ -18,6 +18,8 @@ package edu.cnm.deepdive.rps.view;
 import edu.cnm.deepdive.rps.model.Arena;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -34,6 +36,8 @@ public class TerrainView extends Canvas {
   private Color[] breedColors;
   private Arena arena;
   private boolean bound;
+  private WritableImage buffer;
+  private PixelWriter writer;
 
   /**
    * Returns a {@code true} flag indicating that this view is resizable, after binding its size to
@@ -54,9 +58,6 @@ public class TerrainView extends Canvas {
   /**
    * Resizes {@code this} instance to the specified dimensions, and re-draws the {@link Arena}
    * terrain contents.
-   *
-   * @param width
-   * @param height
    */
   @Override
   public void resize(double width, double height) {
@@ -83,6 +84,8 @@ public class TerrainView extends Canvas {
     for (int i = 0; i < numBreeds; i++) {
       breedColors[i] = Color.hsb(i * MAX_HUE / numBreeds, 1, 0.9);
     }
+    buffer = new WritableImage(size, size);
+    writer = buffer.getPixelWriter();
   }
 
   /**
@@ -91,18 +94,17 @@ public class TerrainView extends Canvas {
    * the breed occupying the cell.
    */
   public void draw() {
-    if (terrain != null) {
+    if (buffer != null) {
       GraphicsContext context = getGraphicsContext2D();
-      arena.copyTerrain(terrain);
-      double cellWidth = getWidth() / terrain[0].length;
-      double cellHeight = getHeight() / terrain.length;
-      context.clearRect(0, 0, getWidth(), getHeight());
-      for (int row = 0; row < terrain.length; row++) {
-        double cellTop = row * cellHeight;
-        for (int col = 0; col < terrain[row].length; col++) {
-          context.setFill(breedColors[terrain[row][col]]);
-          context.fillOval(col * cellWidth, cellTop, cellWidth, cellHeight);
-        }
+      context.drawImage(buffer, 0, 0, terrain.length, terrain.length, 0, 0, getWidth(), getHeight());
+    }
+  }
+
+  public void update() {
+    arena.copyTerrain(terrain);
+    for (int row = 0; row < terrain.length; row++) {
+      for (int col = 0; col < terrain[row].length; col++) {
+        writer.setColor(col, row, breedColors[terrain[row][col]]);
       }
     }
   }
