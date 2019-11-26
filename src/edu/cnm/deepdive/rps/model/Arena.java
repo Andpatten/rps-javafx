@@ -275,6 +275,8 @@ public class Arena {
     SOUTH(1, 0),
     WEST(0, -1);
 
+    private static final Direction[] allDirections = Direction.values();
+
     private final int rowOffset;
     private final int columnOffset;
 
@@ -284,7 +286,6 @@ public class Arena {
     }
 
     private static Direction random(Random rng) {
-      Direction[] allDirections = Direction.values();
       return allDirections[rng.nextInt(allDirections.length)];
     }
 
@@ -297,5 +298,4 @@ public class Arena {
     }
 
   }
-
 }
